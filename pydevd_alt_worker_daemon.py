@@ -22,7 +22,18 @@ if __name__ == '__main__':
     # Note it's super important we don't output anything to STDERR/STDOUT since
     # The Scala Spark expects certain bytes to happen to tell it how to connect to us
     from pydev import pydevd
-    pydevd.settrace(port=7778, suspend=False)
+    debug_port = 7778
+    fail = False
+    try:
+        pydevd.settrace(port=debug_port, suspend=False)
+    except:
+        fail = True
+    while fail and debug_port < 7799:
+        try:
+            pydevd.settrace(port=debug_port, suspend=False)
+            fail = False
+        except:
+            fail = True
     original_daemon.manager()
 
     

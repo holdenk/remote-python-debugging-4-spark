@@ -21,6 +21,17 @@ import pyspark.daemon as original_daemon
 if __name__ == '__main__':
     # Note it's super important we don't output anything to STDERR/STDOUT since
     # The Scala Spark expects certain bytes to happen to tell it how to connect to us
-    RemotePdb('0.0.0.0', 7778).set_trace()
+    debug_port = 7778
+    fail = False
+    try:
+        RemotePdb('0.0.0.0', debug_port).set_trace()
+    except:
+        fail = True
+    while fail and debug_port < 7799:
+        try:
+            RemotePdb('0.0.0.0', debug_port).set_trace()
+            fail = False
+        except:
+            fail = True
     original_daemon.manager()
     
